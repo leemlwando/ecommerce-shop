@@ -1,9 +1,10 @@
 const Product = require('../server/models/product');
 const mongoose = require('mongoose');
+const { mongoURI } = require('./config');
 
 try {
   mongoose.connect(
-    'mongodb://localhost:27017/shopping',
+    mongoURI,
     { useNewUrlParser: true }
   );
   console.log('connected');

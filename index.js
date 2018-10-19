@@ -8,9 +8,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const { mongoURI } = require('./config');
 
 mongoose.connect(
-  'mongodb://localhost:27017/shopping',
+  mongoURI,
   {
     useNewUrlParser: true
   }
@@ -24,10 +25,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
-    cookie: { maxAge: 180 * 60 * 1000 }
+    cookie: { maxAge: 180 * 60 * 1000 } // 180min = 3hrs
   })
 );
-
 app.use((req, res, next) => {
   res.locals.session = req.session;
   console.log(
@@ -35,9 +35,14 @@ app.use((req, res, next) => {
     '=========================================REQ.SESSION'
   );
   console.log(
+    req.session.cookie,
+    '=========================================REQ.SESSION.COOKIE'
+  );
+  console.log(
     res.locals.session,
     '++++++++++++++++++++++++++++++++++RES.LOCALS.SESSION'
   );
+  console.log(req.sessionID, '++++++++++++++++++++++++++++++++++REQ.SESSIONID');
   next();
 });
 router(app);

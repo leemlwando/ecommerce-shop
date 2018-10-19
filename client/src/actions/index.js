@@ -20,7 +20,7 @@ import {
   FETCH_CATEGORIES_FAILURE,
   REMOVE_PRODUCT_FROM_CART,
   PRODUCT_PAGE_STATE_NULL,
-  EMPTY_CART,
+  EMPTY_CART
 } from './types';
 import { getRenderedProductsLength } from '../selectors';
 
@@ -60,6 +60,7 @@ export const signin = (formProps, callback) => async dispatch => {
 
 export const signout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('cart');
 
   return {
     type: AUTH_USER,
@@ -146,6 +147,7 @@ export const addProductToCart = id => async dispatch => {
 
   try {
     const response = await axios.get(`http://localhost:3090/addToCart/${id}`);
+
     console.log(response.data);
     dispatch({ type: ADD_PRODUCT_TO_CART_SUCCESS, payload: response.data });
   } catch (err) {

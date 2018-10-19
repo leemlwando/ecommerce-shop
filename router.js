@@ -40,6 +40,14 @@ module.exports = function(app) {
     console.log('++++++++++++++++++++++++++++++++++++++++start ');
     console.log(
       req.session,
+      '==========================================req.session'
+    );
+    console.log(
+      req.sessionID,
+      '==========================================req.sessionID'
+    );
+    console.log(
+      req.session.cart,
       '==========================================req.session.cart'
     );
     const cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -57,8 +65,10 @@ module.exports = function(app) {
       // console.log(product, 'product found ---------------');
       // console.log(product._id, 'product _id --------------');
       cart.add(product, product._id);
+      console.log('!!!!!!!!!!!!!!!-----product just added to cart');
       req.session.cart = cart;
       console.log(req.session.cart, '---------------req.session.cart');
+
       res.send(req.session.cart);
     });
   });
