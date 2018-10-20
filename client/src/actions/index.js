@@ -147,7 +147,6 @@ export const addProductToCart = id => async dispatch => {
 
   try {
     const response = await axios.get(`http://localhost:3090/addToCart/${id}`);
-
     console.log(response.data);
     dispatch({ type: ADD_PRODUCT_TO_CART_SUCCESS, payload: response.data });
   } catch (err) {
