@@ -13,7 +13,7 @@ exports.signin = function(req, res, next) {
   // passport gives us access to the user as req.user
   // passed into our done callback from localLogin = new LocalStrategy()
   // in passport.js
-  console.log("here")
+  // console.log("here")
   res.send({ token: tokenForUser(req.user) });
 };
 

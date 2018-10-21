@@ -7,21 +7,22 @@ module.exports = {
     PassportSession: ()=>passport.session(),
     localStrategy: ()=>{
         return passport.use(new localStrategy({
-            username:"email",
-            password:"password"
+            usernameField:"email",
+            passwordField:"password"
         },function(username,password,done){
-            console.log("username", username,"password",password)
+            // console.log("username", username,"password",password)
                 User.findOne({email:username})
                     .then(user=>{
                         if(!user){
+                            // Console.log("user not found")
                             return done(null,false);
                         }
 
-                        if(!user.comparePassword(password)){
-                            return done(null,false);
-                        }
-
-                        done(null,user);
+                        user.comparePassword(password,function(err,isMatch){
+                            if(err){return done(err)};
+                            if(!isMatch){return done(null,false)};
+                            return done(null,user);
+                        })
                     })
                         .catch(err=>{
                             console.log(err)
@@ -31,14 +32,18 @@ module.exports = {
     },
 
     serializeUser:  ()=> passport.serializeUser(function(user, done){
-        console.log('serialize user');
+        // console.log('serialize user');
         done(null, user.id);
     }),
     
     deserializeUser:()=>passport.deserializeUser(function(id, done) {
-        console.log('deserialize user')
+        // console.log('deserialize user')
          User.findById(id, function(err, user) { done(err, user);
         });
     })
       
 }
+
+/**
+ *@{TODO} - PASSPORT-JWT
+*/

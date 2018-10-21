@@ -30,22 +30,12 @@ userSchema.pre('save', function(next) {
 
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   // this.password is what is stored in our database
-  let res;
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
-      // return callback(err);
-      res = false
-      return res;
+      return callback(err);
     }
 
-    // callback(null, isMatch);
-    if(!isMatch){
-      res = false
-      return res;
-    }
-
-    res=true
-    return true;
+    callback(null, isMatch);
   });
 };
 
