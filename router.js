@@ -52,7 +52,7 @@ module.exports = function(app) {
 
       cart.add(product, product._id);
       console.log('!!!!!!!!!!!!!!!-----product just added to cart');
-      req.session.cart = cart;
+      req.session.cart = cart;  
       console.log(req.session, '~~~~~ req.session after add to cart ~~~~');
       res.send(cart);
     });

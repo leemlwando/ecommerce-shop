@@ -1,20 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
+const createError = require('http-errors');
+const session = require('./config/session');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const app = express();
-const router = require('./router');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const session = require('express-session');
-const MongoStore = require('connect-mongodb-session')(session);
-const { mongoURI } = require('./config');
-const {initialize,PassportSession,localStrategy,serializeUser,deserializeUser} = require('./config/passport');
+const ApiRoutes = require('./api');
+const {initialize,PassportSession,localStrategy,serializeUser,deserializeUser,PassportStrategy} = require('./config/passport');
 
-mongoose.connect(
-  'mongodb://localhost:27017/shopping',
-  { useNewUrlParser: true }
-);
 
 app.use(morgan('dev')); // logs request
 app.use(cors());
@@ -26,26 +21,37 @@ app.use(function(req, res, next) {
   res.locals.session = req.session;
   next();
 });
-app.use(
-  session({
-    name:"ellis",
-    secret: 'ellis',
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({
-      uri:'mongodb://localhost:27017/shopping',
-      collection:"sessions"
-    }),
-    cookie: { maxAge: 180 * 60 * 1000, secure:false } // 180min = 3hrs
-  })
-);
 
+//express sesion
+app.use(session);
+
+//passport
 initialize();
 PassportSession();
 localStrategy();
+PassportStrategy();
 serializeUser();
 deserializeUser();
-router(app);
+
+//Api routes
+app.use("/api/v1/",ApiRoutes);
+
+//ctach 404
+app.use(function(req,res,next){
+    next(createError(404));
+})
+
+//handler error responses
+app.use(function(err,req,res,next){
+  if(!err){return next()};
+    res.status(err.code || err.status || 500);
+    res.json({
+      success:!err.success ? false : true,
+      message:!err.message ? "Ooops! an error occuored!" : err.message,
+      reason:!err.reason ? null : err.reason
+    })
+})
+
 
 try {
   const port = process.env.PORT || 3090;
@@ -54,4 +60,5 @@ try {
   console.log('server listening on: ', port);
 } catch (err) {
   console.log(err);
+  process.exit(1)
 }

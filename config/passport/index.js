@@ -1,6 +1,10 @@
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
-const User = require('../../models/user');
+const  JwtStrategy = require('passport-jwt').Strategy;
+const  ExtractJwt = require('passport-jwt').ExtractJwt;
+const config  = require('../index');
+
+const {User} = require('../../lib/db');
 
 module.exports = {
     initialize : ()=>passport.initialize(),
@@ -28,6 +32,24 @@ module.exports = {
                             console.log(err)
                             done(err)
                         })
+        }));
+    },
+
+    PassportStrategy:()=>{
+        return passport.use("jwt",new JwtStrategy({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: config.secret
+
+        },function(jwt_payload, done){
+            console.log("here..")
+            User.findOne({_id:jwt_payload.id})
+                .then(user=>{
+                    if(!user){
+                        return done(null, false);
+                    }
+
+                    return done(null, {email:user.email,firstName:user.firstName, lastName:user.firstName});
+                }).catch(err=>done(err));
         }));
     },
 
