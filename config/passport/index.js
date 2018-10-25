@@ -36,20 +36,21 @@ module.exports = {
     },
 
     PassportStrategy:()=>{
-        return passport.use("jwt",new JwtStrategy({
+        return passport.use(new JwtStrategy({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: config.secret
+            secretOrKey:process.env.JWT_SECRET
 
         },function(jwt_payload, done){
-            console.log("here..")
-            User.findOne({_id:jwt_payload.id})
+            console.log("here..", jwt_payload)
+            User.findOne({_id:jwt_payload._id})
                 .then(user=>{
+                    console.log(user)
                     if(!user){
-                        return done(null, false);
+                        return done(null, false, {message:"please provide valid authentication details"});
                     }
 
                     return done(null, {email:user.email,firstName:user.firstName, lastName:user.firstName});
-                }).catch(err=>done(err));
+                }).catch(err=>done(err, false,{message:"please provide a valid credentials"}));
         }));
     },
 

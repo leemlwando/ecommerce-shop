@@ -26,8 +26,8 @@ app.use(function(req, res, next) {
 app.use(session);
 
 //passport
-initialize();
-PassportSession();
+app.use(initialize()); // register middleware
+app.use(PassportSession()); //register middleware
 localStrategy();
 PassportStrategy();
 serializeUser();

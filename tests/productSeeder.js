@@ -1,6 +1,6 @@
 const Product = require('../server/models/product');
 const mongoose = require('mongoose');
-const { mongoURI } = require('./config');
+const { mongoURI } = require('../config');
 
 try {
   mongoose.connect(

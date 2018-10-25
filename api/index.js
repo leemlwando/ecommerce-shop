@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const home = require('./home');
 const auth = require('./auth');
+const user = require('./users');
+const passport = require('passport');
 
 
 
@@ -14,7 +16,7 @@ router.get("/",home.get);
  /**
   *  POST signin
  */
-router.post("/signin",auth.signup.post);
+router.post("/signin",passport.authenticate("local"),auth.signin.post);
 
 
  /**
@@ -22,6 +24,17 @@ router.post("/signin",auth.signup.post);
  */
 router.post("/signup",auth.signup.post);
 
+
+/**
+ *  GET products
+*/
+
+
+/**
+ * GET profile
+*/
+
+router.get("/profile",passport.authenticate("jwt",{session:false}),user.profile.get);
 
 
 
