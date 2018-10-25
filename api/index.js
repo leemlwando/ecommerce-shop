@@ -3,6 +3,7 @@ const router = express.Router();
 const home = require('./home');
 const auth = require('./auth');
 const user = require('./users');
+const products = require('./products');
 const passport = require('passport');
 
 
@@ -26,9 +27,17 @@ router.post("/signup",auth.signup.post);
 
 
 /**
- *  GET products
+ *  GET all products
 */
 
+router.get("/products",products.all.get);
+
+
+/**
+ * GET one product
+*/
+
+router.get("/products/:id",products.id.get);
 
 /**
  * GET profile

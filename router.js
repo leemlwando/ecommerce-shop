@@ -10,25 +10,6 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
 module.exports = function(app) {
-  app.get('/requireAuth', requireAuth, function(req, res,next) {
-    res.send({ hello: 'auth' });
-  });
-  app.post('/signin', requireSignin, Authentication.signin);
-  app.post('/signup', Authentication.signup);
-
-  app.get('/products', async (req, res) => {
-    const products = await Product.find();
-    res.send(products);
-  });
-
-  app.get('/product/:id', async (req, res) => {
-    await Product.findById(req.params.id, (err, product) => {
-      if (err) {
-        return console.log(err);
-      }
-      res.send(product);
-    });
-  });
 
   app.get('/categories', async (req, res) => {
     const categories = await Category.find();
